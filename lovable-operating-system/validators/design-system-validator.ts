@@ -1,11 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-
-export interface ValidationResult {
-  valid: boolean;
-  errors: string[];
-  warnings: string[];
-}
+import { ValidationResult } from "./types";
 
 export function validateDesignSystemFolder(folderPath: string): ValidationResult {
   const errors: string[] = [];

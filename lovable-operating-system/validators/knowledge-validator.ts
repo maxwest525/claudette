@@ -1,12 +1,7 @@
 import * as fs from "fs";
+import { ValidationResult } from "./types";
 
 const MAX_KNOWLEDGE_BYTES = 50_000;
-
-export interface ValidationResult {
-  valid: boolean;
-  errors: string[];
-  warnings: string[];
-}
 
 export function validateKnowledgeSize(filePath: string): ValidationResult {
   const errors: string[] = [];

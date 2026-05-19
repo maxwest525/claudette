@@ -1,0 +1,18 @@
+{
+  "id": "{{uuid}}",
+  "title": "{{title}}",
+  "type": "{{type}}",
+  "skill_name": "{{skill-name}}",
+  "source": "{{source}}",
+  "tags": [],
+  "created_at": "{{iso-datetime}}",
+  "updated_at": "{{iso-datetime}}",
+  "status": "draft",
+  "install_method": "zip-import",
+  "validation_status": "pending",
+  "use_when": "{{use-when}}",
+  "category": "{{category}}",
+  "author": "{{author}}",
+  "lovable_compatible": true,
+  "duplicate_score": 0
+}

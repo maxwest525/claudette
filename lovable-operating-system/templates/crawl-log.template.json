@@ -1,0 +1,11 @@
+{
+  "crawl_id": "{{uuid}}",
+  "started_at": "{{iso-datetime}}",
+  "completed_at": null,
+  "status": "running",
+  "source_type": "{{source-type}}",
+  "target": "{{target-url-or-path}}",
+  "files_collected": 0,
+  "errors": [],
+  "notes": "{{notes}}"
+}

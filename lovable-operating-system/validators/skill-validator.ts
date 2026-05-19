@@ -1,11 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
+import { ValidationResult } from "./types";
 
-export interface ValidationResult {
-  valid: boolean;
-  errors: string[];
-  warnings: string[];
-}
+export { ValidationResult };
 
 export function validateSkillName(name: string): ValidationResult {
   const errors: string[] = [];
