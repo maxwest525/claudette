@@ -22,7 +22,13 @@
     "format:imports": "ts-node scripts/format-imports.ts",
     "format:exports": "ts-node scripts/format-exports.ts",
     "crawl:log": "ts-node scripts/log-crawl.ts",
-    "source:track": "ts-node scripts/track-source.ts"
+    "source:track": "ts-node scripts/track-source.ts",
+    "process": "ts-node scripts/process-pipeline.ts",
+    "enrich": "ts-node scripts/enrich-sources.ts",
+    "dedup": "ts-node scripts/dedup-pipeline.ts",
+    "candidates": "ts-node scripts/detect-skill-candidates.ts",
+    "promote": "ts-node scripts/promote-to-skill.ts",
+    "phase2": "npm run process && npm run enrich && npm run dedup && npm run candidates"
   },
   "dependencies": {
     "archiver": "^6.0.1",
