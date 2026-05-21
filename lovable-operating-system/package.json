@@ -28,7 +28,12 @@
     "dedup": "ts-node scripts/dedup-pipeline.ts",
     "candidates": "ts-node scripts/detect-skill-candidates.ts",
     "promote": "ts-node scripts/promote-to-skill.ts",
-    "phase2": "npm run process && npm run enrich && npm run dedup && npm run candidates"
+    "phase2": "npm run process && npm run enrich && npm run dedup && npm run candidates",
+    "batch:promote": "ts-node scripts/batch-promote.ts",
+    "package:batch": "ts-node scripts/batch-package.ts",
+    "bundle": "ts-node scripts/create-export-bundle.ts",
+    "report": "ts-node scripts/export-report.ts",
+    "phase3": "npm run batch:promote && npm run package:batch && npm run bundle && npm run report"
   },
   "dependencies": {
     "archiver": "^6.0.1",

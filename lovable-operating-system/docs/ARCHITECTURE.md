@@ -54,16 +54,19 @@ Pipeline: `npm run phase2` runs all steps in sequence.
 4. **Candidates** (`npm run candidates`) — filters items with skill_candidate_score >= 0.4, outputs `processed/skill-candidates.json`
 5. **Promote** (`npm run promote <id> <skill-name>`) — promotes a processed item to a full skill scaffold
 
-## Phase 3: Deduplication (Merged into Phase 2)
+## Phase 3: Packaging & Export (Active)
+
+Pipeline: `npm run phase3` runs all steps in sequence.
+
+1. **Batch promote** (`npm run batch:promote [threshold]`) — promotes all skill candidates above threshold (default 0.5) to `skills/` folders, auto-generating skill names from titles
+2. **Batch package** (`npm run package:batch`) — validates and ZIPs all skills in `skills/` to `exports/`
+3. **Bundle** (`npm run bundle [version]`) — creates a versioned bundle ZIP in `exports/bundles/` containing all skill ZIPs + manifest + BUNDLE.md
+4. **Report** (`npm run report`) — generates `exports/EXPORT-REPORT.md` with full system stats
+
+## Phase 4: Deduplication (Merged into Phase 2)
 
 Deduplication is now part of the Phase 2 pipeline via `npm run dedup`.
-Advanced merge/archive tooling is Phase 4+.
-
-## Phase 4: Packaging (Planned)
-
-- Generate SKILL.md from processed sources
-- ZIP packaging for Lovable imports
-- Export manifests
+Advanced merge/archive tooling is Phase 5+.
 
 ## Phase 5: Automation (Future)
 
