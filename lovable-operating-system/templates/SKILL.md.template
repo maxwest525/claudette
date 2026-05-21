@@ -1,0 +1,21 @@
+# {{skill-name}}
+
+{{use-when-description}}
+
+## Overview
+
+{{overview}}
+
+## Instructions
+
+{{instructions}}
+
+## Examples
+
+```
+{{example}}
+```
+
+## Notes
+
+{{notes}}

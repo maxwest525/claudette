@@ -1,10 +1,5 @@
 import { BaseMetadataSchema, SkillMetadataSchema } from "../schemas/metadata.schema";
-
-export interface ValidationResult {
-  valid: boolean;
-  errors: string[];
-  warnings: string[];
-}
+import { ValidationResult } from "./types";
 
 export function validateBaseMetadata(data: unknown): ValidationResult {
   const result = BaseMetadataSchema.safeParse(data);

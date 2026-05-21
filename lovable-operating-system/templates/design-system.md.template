@@ -1,0 +1,23 @@
+# {{name}} Design System
+
+{{description}}
+
+## Purpose
+
+{{purpose}}
+
+## Components
+
+See `components.md` for component documentation.
+
+## Styling
+
+See `styling.md` for styling guidelines.
+
+## Tokens
+
+See `tokens.md` for design tokens.
+
+## Patterns
+
+See `patterns.md` for usage patterns.

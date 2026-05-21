@@ -1,0 +1,28 @@
+---
+id: {{uuid}}
+title: "{{title}}"
+type: "workspace-knowledge"
+category: "{{category}}"
+tags: []
+author: "{{author}}"
+created_at: "{{iso-datetime}}"
+updated_at: "{{iso-datetime}}"
+status: "draft"
+validation_status: "pending"
+---
+
+# {{title}}
+
+{{summary}}
+
+## Context
+
+{{context}}
+
+## Content
+
+{{content}}
+
+## References
+
+{{references}}
