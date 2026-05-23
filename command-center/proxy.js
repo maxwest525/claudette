@@ -21,7 +21,7 @@ const DIR = __dirname;
    LOAD KEYS FROM .env OR process.env
    ============================================ */
 function loadEnv() {
-  const ENV_KEYS = ['STRIPE_SECRET_KEY', 'IG_ACCESS_TOKEN', 'APIFY_TOKEN', 'COMPETITORS', 'GOOGLE_ENABLED', 'USER_EMAIL', 'TAVILY_API_KEY'];
+  const ENV_KEYS = ['IG_ACCESS_TOKEN', 'APIFY_TOKEN', 'COMPETITORS', 'GOOGLE_ENABLED', 'USER_EMAIL', 'TAVILY_API_KEY'];
   const keys = {};
 
   // Read from process.env first (Vercel production sets vars here)
@@ -51,7 +51,6 @@ const ENV = loadEnv();
 
 // Determine which services are enabled
 const SERVICES = {
-  stripe: !!ENV.STRIPE_SECRET_KEY,
   instagram: !!ENV.IG_ACCESS_TOKEN,
   competitors: !!ENV.APIFY_TOKEN && !!ENV.COMPETITORS,
   gmail: !!ENV.GOOGLE_ENABLED,
@@ -64,7 +63,6 @@ const USER_EMAIL = ENV.USER_EMAIL || '';
 
 console.log('\n⚡ Command Center Proxy');
 console.log('─────────────────────────────────');
-console.log(`Stripe:      ${SERVICES.stripe ? '✓' : '—'}`);
 console.log(`Instagram:   ${SERVICES.instagram ? '✓' : '—'}`);
 console.log(`Competitors: ${SERVICES.competitors ? '✓ (' + COMPETITORS.length + ' handles)' : '—'}`);
 console.log(`Gmail:       ${SERVICES.gmail ? '✓' : '—'}`);
@@ -127,95 +125,6 @@ const routes = {
     services: SERVICES,
     competitors: COMPETITORS,
   }),
-
-  /* ── STRIPE ──────────────────────────────── */
-  '/api/stripe': async (params) => {
-    if (!SERVICES.stripe) return { error: 'Stripe not enabled' };
-
-    const filter = params.get('filter') || 'today';
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const tomorrow = new Date(today.getTime() + 86400000);
-    let from, to;
-
-    if (params.get('from') && params.get('to')) {
-      from = new Date(params.get('from'));
-      to = new Date(new Date(params.get('to')).getTime() + 86400000);
-    } else {
-      switch (filter) {
-        case '7d': from = new Date(today.getTime() - 6 * 86400000); to = tomorrow; break;
-        case 'month': from = new Date(today.getFullYear(), today.getMonth(), 1); to = tomorrow; break;
-        case '30d': from = new Date(today.getTime() - 29 * 86400000); to = tomorrow; break;
-        default: from = today; to = tomorrow;
-      }
-    }
-
-    const gte = Math.floor(from.getTime() / 1000);
-    const lt = Math.floor(to.getTime() / 1000);
-    const auth = { 'Authorization': 'Bearer ' + ENV.STRIPE_SECRET_KEY };
-
-    const [charges, balTxns, disputes, refunds] = await Promise.all([
-      fetchJSON(`https://api.stripe.com/v1/charges?limit=100&created[gte]=${gte}&created[lt]=${lt}`, { headers: auth }),
-      fetchJSON(`https://api.stripe.com/v1/balance_transactions?limit=100&created[gte]=${gte}&created[lt]=${lt}`, { headers: auth }),
-      fetchJSON(`https://api.stripe.com/v1/disputes?limit=20`, { headers: auth }),
-      fetchJSON(`https://api.stripe.com/v1/refunds?limit=50&created[gte]=${gte}&created[lt]=${lt}`, { headers: auth }),
-    ]);
-
-    const btData = balTxns.data?.data || [];
-    let gross = 0, fees = 0, netTotal = 0, refundAmount = 0;
-    const transactions = [];
-
-    for (const bt of btData) {
-      if (bt.type === 'charge') {
-        gross += bt.amount;
-        fees += Math.abs(bt.fee || 0);
-        netTotal += bt.net;
-        transactions.push({
-          date: new Date(bt.created * 1000).toISOString(),
-          description: bt.description || 'Payment',
-          amount: bt.amount, fee: Math.abs(bt.fee || 0), net: bt.net,
-          status: 'succeeded', type: 'charge',
-        });
-      } else if (bt.type === 'refund') {
-        refundAmount += Math.abs(bt.amount);
-        transactions.push({
-          date: new Date(bt.created * 1000).toISOString(),
-          description: bt.description || 'Refund',
-          amount: bt.amount, fee: bt.fee || 0, net: bt.net,
-          status: 'refunded', type: 'refund',
-        });
-      }
-    }
-
-    if (btData.length === 0) {
-      const chargeData = charges.data?.data || [];
-      for (const c of chargeData) {
-        if (c.status === 'succeeded') {
-          const fee = Math.round(c.amount * 0.029 + 30);
-          gross += c.amount; fees += fee; netTotal += c.amount - fee;
-          transactions.push({
-            date: new Date(c.created * 1000).toISOString(),
-            description: c.description || c.statement_descriptor || 'Payment',
-            customer: c.billing_details?.name || c.customer || '',
-            amount: c.amount, fee, net: c.amount - fee,
-            status: c.refunded ? 'refunded' : 'succeeded', type: 'charge',
-          });
-        }
-      }
-    }
-
-    const activeDisputes = (disputes.data?.data || []).filter(d => d.status === 'needs_response' || d.status === 'warning_needs_response');
-
-    return {
-      gross, fees, net: netTotal, refundAmount,
-      chargeCount: transactions.filter(t => t.type === 'charge').length,
-      refundCount: (refunds.data?.data || []).length,
-      disputeCount: activeDisputes.length,
-      disputes: activeDisputes.map(d => ({ id: d.id, amount: d.amount, reason: d.reason, status: d.status })),
-      transactions: transactions.sort((a, b) => new Date(b.date) - new Date(a.date)),
-      dateRange: { from: from.toISOString(), to: to.toISOString(), filter },
-    };
-  },
 
   /* ── GMAIL ───────────────────────────────── */
   '/api/gmail': async (params) => {

@@ -18,13 +18,6 @@ async function main() {
 
   const env = {};
 
-  // Stripe
-  const wantStripe = (await ask('Stripe revenue dashboard? (y/n): ')).toLowerCase().startsWith('y');
-  if (wantStripe) {
-    const k = (await ask('  Stripe Secret Key (dashboard.stripe.com/apikeys): ')).trim();
-    if (k) env.STRIPE_SECRET_KEY = k;
-  }
-
   // Instagram
   const wantIg = (await ask('Instagram post analytics? (y/n): ')).toLowerCase().startsWith('y');
   if (wantIg) {
