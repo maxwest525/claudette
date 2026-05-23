@@ -6,11 +6,12 @@
 - Run `npm run ingest:index` to build source index
 - Track sources manually via `npm run source:track`
 
-## Phase 2 — Structured Manual Ingestion (Next)
-- CLI for adding sources with metadata
-- Batch import from folder
-- Markdown/HTML/text normalization
-- Source deduplication by URL
+## Phase 2 — Processing & Classification (Complete)
+- ✅ Process pipeline: normalize, extract stats, score quality and skill candidacy
+- ✅ Enrichment: keyword-based category classification (12 categories), tag enrichment
+- ✅ Deduplication: URL exact, content hash exact, Jaccard near-duplicate (threshold 0.6)
+- ✅ Skill candidate detection: score-ranked candidate list
+- ✅ Promote: promote processed items to skill scaffolds
 
 ## Phase 3 — GitHub Import (Planned)
 - Clone public repos

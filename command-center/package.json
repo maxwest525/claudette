@@ -1,0 +1,13 @@
+{
+  "name": "command-center",
+  "version": "1.0.0",
+  "description": "Personal business dashboard — Stripe, Gmail, Calendar, Instagram, AI News",
+  "main": "proxy.js",
+  "scripts": {
+    "start": "node proxy.js",
+    "setup": "node setup.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

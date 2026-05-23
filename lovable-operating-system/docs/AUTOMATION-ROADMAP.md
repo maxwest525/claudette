@@ -1,6 +1,6 @@
 # Automation Roadmap
 
-## Phase 1 — Local Scripts (Now)
+## Phase 1 — Local Scripts (Active)
 All automation runs locally via npm scripts.
 
 | Script | Command |
@@ -14,11 +14,12 @@ All automation runs locally via npm scripts.
 | Save raw source | `npm run ingest:save` |
 | Track source | `npm run source:track` |
 
-## Phase 2 — GitHub Actions (Planned)
-- Auto-validate on push
-- Auto-package on tag
-- PR-based skill review
-- Duplicate check on new skill PRs
+## Phase 2 — GitHub Actions (Active)
+- ✅ Auto-validate on every push/PR (`validate.yml`)
+- ✅ Auto-package + release on version tag (`package-on-tag.yml`)
+- ✅ PR skill check with duplicate detection (`pr-skill-check.yml`)
+- ✅ Nightly pipeline: Phase 2 + Phase 3 + commit outputs (`nightly-pipeline.yml`)
+- ✅ PR template with skill checklist
 
 ## Phase 3 — Scheduled Ingestion (Future)
 - Nightly crawl from tracked source list
