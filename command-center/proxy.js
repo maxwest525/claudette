@@ -18,26 +18,30 @@ const PORT = process.env.PORT || 8787;
 const DIR = __dirname;
 
 /* ============================================
-   LOAD KEYS FROM .env
+   LOAD KEYS FROM .env OR process.env
    ============================================ */
 function loadEnv() {
-  const envPath = path.join(DIR, '.env');
+  const ENV_KEYS = ['STRIPE_SECRET_KEY', 'IG_ACCESS_TOKEN', 'APIFY_TOKEN', 'COMPETITORS', 'GOOGLE_ENABLED', 'USER_EMAIL', 'TAVILY_API_KEY'];
   const keys = {};
 
-  if (!fs.existsSync(envPath)) {
-    console.error('\n⚠ No .env file found. Run the setup first:\n  node setup.js\n');
-    process.exit(1);
+  // Read from process.env first (Vercel production sets vars here)
+  for (const key of ENV_KEYS) {
+    if (process.env[key]) keys[key] = process.env[key];
   }
 
-  const lines = fs.readFileSync(envPath, 'utf8').split('\n');
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) continue;
-    const eqIdx = trimmed.indexOf('=');
-    if (eqIdx === -1) continue;
-    const key = trimmed.substring(0, eqIdx).trim();
-    const val = trimmed.substring(eqIdx + 1).trim();
-    if (val) keys[key] = val;
+  // For local development, .env file overrides process.env
+  const envPath = path.join(DIR, '.env');
+  if (fs.existsSync(envPath)) {
+    const lines = fs.readFileSync(envPath, 'utf8').split('\n');
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
+      const eqIdx = trimmed.indexOf('=');
+      if (eqIdx === -1) continue;
+      const key = trimmed.substring(0, eqIdx).trim();
+      const val = trimmed.substring(eqIdx + 1).trim();
+      if (val) keys[key] = val;
+    }
   }
 
   return keys;
@@ -470,7 +474,7 @@ const routes = {
 /* ============================================
    SERVER
    ============================================ */
-const server = http.createServer(async (req, res) => {
+async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -543,10 +547,17 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`⚡ Proxy running at http://localhost:${PORT}\n`);
-  console.log('Endpoints:');
-  Object.keys(routes).forEach(r => console.log(`  ${r}`));
-  console.log(`  /api/image?url=...`);
-  console.log(`\nOpen dashboard.html in your browser to get started.\n`);
-});
+// For local development: start the HTTP server when run directly
+if (require.main === module) {
+  const server = http.createServer(handler);
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`⚡ Proxy running at http://localhost:${PORT}\n`);
+    console.log('Endpoints:');
+    Object.keys(routes).forEach(r => console.log(`  ${r}`));
+    console.log(`  /api/image?url=...`);
+    console.log(`\nOpen dashboard.html in your browser to get started.\n`);
+  });
+}
+
+// For Vercel: export the handler as a serverless function
+module.exports = handler;
