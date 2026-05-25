@@ -22,6 +22,10 @@ jobs:
         working-directory: lovable-operating-system
         run: npm ci
 
+      - name: Generate skill candidates
+        working-directory: lovable-operating-system
+        run: npm run candidates
+
       - name: Run Phase 2 pipeline
         working-directory: lovable-operating-system
         run: npm run phase2
