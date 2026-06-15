@@ -23,7 +23,9 @@ interface ProcessedItem {
 
 function main(): void {
   if (!fs.existsSync(PROCESSED_INDEX_PATH)) {
-    console.log("No processed-index.json found. Run `npm run process` first.");
+    console.log("No processed-index.json found — writing empty candidates file.");
+    fs.mkdirSync(path.join(ROOT, "processed"), { recursive: true });
+    fs.writeFileSync(CANDIDATES_PATH, JSON.stringify({ generated_at: new Date().toISOString(), threshold: THRESHOLD, total: 0, candidates: [] }, null, 2));
     return;
   }
 
