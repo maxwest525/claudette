@@ -28,7 +28,7 @@ function main(): void {
   const threshold = parseFloat(process.argv[2] || "0.5");
 
   if (!fs.existsSync(CANDIDATES_PATH)) {
-    console.error("No skill-candidates.json found. Run `npm run candidates` first.");
+    console.error("Error: 'skill-candidates.json' file is missing. Ensure you run `npm run candidates` first to generate the file.");
     process.exit(1);
   }
 
