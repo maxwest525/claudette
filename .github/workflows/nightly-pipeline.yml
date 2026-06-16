@@ -5,6 +5,9 @@ on:
     - cron: "0 2 * * *"
   workflow_dispatch:
 
+permissions: 
+contens: write
+
 jobs:
   pipeline:
     runs-on: ubuntu-latest
